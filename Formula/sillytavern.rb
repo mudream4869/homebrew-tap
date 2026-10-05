@@ -28,13 +28,6 @@ class Sillytavern < Formula
     EOS
   end
 
-  service do
-    run [opt_bin/"sillytavern", "--browserLaunchEnabled", "false"]
-    keep_alive true
-    log_path var/"log/sillytavern.log"
-    error_log_path var/"log/sillytavern.log"
-  end
-
   test do
     port = free_port
     pid = spawn bin/"sillytavern", "--port", port.to_s, "--browserLaunchEnabled", "false"
