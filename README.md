@@ -22,4 +22,4 @@ brew services start caddy-localdns  # http://sillytavern.localhost -> localhost:
 
 設定檔在 `$(brew --prefix)/etc/caddy-localdns/Caddyfile`，改完跑 `brew services restart caddy-localdns`。
 用 `*.localhost` 網域，Chrome / Firefox / curl 會自動解析到 127.0.0.1，不用改 `/etc/hosts`（Safari 不一定支援）。
-tap 裡的 `files/caddy-localdns/Caddyfile` 只是初始模板，升級不會覆蓋已存在的設定。
+初次安裝會寫入預設設定，升級不會覆蓋已存在的 Caddyfile。

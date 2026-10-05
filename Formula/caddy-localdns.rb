@@ -1,15 +1,23 @@
 class CaddyLocaldns < Formula
   desc "Caddy reverse proxy for local dev domains"
   homepage "https://github.com/mudream4869/homebrew-tap"
-  # 只取 tap 裡的 Caddyfile 模板，跟著 main 走
-  url "https://github.com/mudream4869/homebrew-tap.git", branch: "main"
-  version "1"
+  # Homebrew 規定要有 url；內容沒用到，只是 pinned 的小檔
+  url "https://raw.githubusercontent.com/caddyserver/caddy/v2.11.7/LICENSE"
+  version "2"
+  sha256 "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
 
   depends_on "caddy"
 
   def install
-    # 已存在時不覆蓋，新版存成 Caddyfile.default
-    (etc/"caddy-localdns").install "files/caddy-localdns/Caddyfile"
+    # 初始模板；已存在就不動
+    (etc/"caddy-localdns").mkpath
+    unless (etc/"caddy-localdns/Caddyfile").exist?
+      (etc/"caddy-localdns/Caddyfile").write <<~EOS
+        http://sillytavern.localhost {
+          reverse_proxy localhost:8000
+        }
+      EOS
+    end
 
     # keg 不能是空的，順便當 service 入口
     (bin/"caddy-localdns").write <<~SH
