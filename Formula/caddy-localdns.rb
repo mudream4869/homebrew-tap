@@ -9,20 +9,24 @@ class CaddyLocaldns < Formula
   depends_on "caddy"
 
   def install
-    # 初始模板；已存在就不動
-    (etc/"caddy-localdns").mkpath
-    unless (etc/"caddy-localdns/Caddyfile").exist?
-      (etc/"caddy-localdns/Caddyfile").write <<~EOS
-        http://sillytavern.localhost {
-          reverse_proxy localhost:8000
-        }
-      EOS
-    end
+    conf = etc/"caddy-localdns"
+    (conf/"sites").mkpath
+
+    write_default conf/"Caddyfile", <<~EOS
+      import #{conf}/sites/*.caddy
+    EOS
+
+    # 新 service：加一個 site 檔並 bump version
+    write_default conf/"sites/sillytavern.caddy", <<~EOS
+      http://sillytavern.localhost {
+        reverse_proxy localhost:8000
+      }
+    EOS
 
     # keg 不能是空的，順便當 service 入口
     (bin/"caddy-localdns").write <<~SH
       #!/bin/sh
-      exec "#{Formula["caddy"].opt_bin}/caddy" run --config "#{etc}/caddy-localdns/Caddyfile" "$@"
+      exec "#{Formula["caddy"].opt_bin}/caddy" run --config "#{conf}/Caddyfile" "$@"
     SH
   end
 
@@ -30,6 +34,15 @@ class CaddyLocaldns < Formula
     <<~EOS
       Config:
         #{etc}/caddy-localdns/Caddyfile
+        #{etc}/caddy-localdns/sites/*.caddy  (one file per site)
+
+      Upgrades add new site files but never overwrite existing ones.
+      To disable a site, empty its file or rename it away from *.caddy;
+      deleting it brings it back on the next upgrade.
+
+      Upgrading from version 1? Your old Caddyfile is kept; replace its
+      contents with this line (keeping both duplicates sillytavern):
+        import #{etc}/caddy-localdns/sites/*.caddy
 
       Use *.localhost domains (e.g. sillytavern.localhost); browsers resolve
       them to 127.0.0.1 without editing /etc/hosts.
@@ -50,5 +63,12 @@ class CaddyLocaldns < Formula
 
   test do
     system Formula["caddy"].opt_bin/"caddy", "validate", "--config", etc/"caddy-localdns/Caddyfile"
+  end
+
+  private
+
+  # 已存在就不覆蓋
+  def write_default(path, content)
+    path.write(content) unless path.exist?
   end
 end
