@@ -1,6 +1,3 @@
-# 初始模板，實際生效的是 $(brew --prefix)/etc/caddy-localdns/Caddyfile
-# *.localhost 瀏覽器會自動解析到 127.0.0.1，不用改 /etc/hosts
-
 http://sillytavern.localhost {
 	reverse_proxy localhost:8000
 }
