@@ -1,12 +1,12 @@
 # 初始模板，實際生效的是 $(brew --prefix)/etc/caddy-localdns/Caddyfile
-# 每個網域記得加進 /etc/hosts
+# *.localhost 瀏覽器會自動解析到 127.0.0.1，不用改 /etc/hosts
 
-http://sillytavern.local {
+http://sillytavern.localhost {
 	reverse_proxy localhost:8000
 }
 
 # 要 HTTPS 的話改用 tls internal，並先跑一次 `caddy trust`
-# sillytavern.local {
+# sillytavern.localhost {
 # 	tls internal
 # 	reverse_proxy localhost:8000
 # }

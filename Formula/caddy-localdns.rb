@@ -23,9 +23,8 @@ class CaddyLocaldns < Formula
       Config:
         #{etc}/caddy-localdns/Caddyfile
 
-      Add each domain to /etc/hosts, e.g.:
-        127.0.0.1 sillytavern.local
-        ::1       sillytavern.local
+      Use *.localhost domains (e.g. sillytavern.localhost); browsers resolve
+      them to 127.0.0.1 without editing /etc/hosts.
 
       Apply config changes:
         brew services restart caddy-localdns
