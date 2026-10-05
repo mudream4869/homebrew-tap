@@ -20,6 +20,6 @@ brew install mudream4869/tap/caddy-localdns
 brew services start caddy-localdns  # http://sillytavern.localhost -> localhost:8000
 ```
 
-設定檔在 `$(brew --prefix)/etc/caddy-localdns/Caddyfile`，改完跑 `brew services restart caddy-localdns`。
+設定檔在 `$(brew --prefix)/etc/caddy-localdns/`：`Caddyfile` 只負責 import，每個 site 一個 `sites/*.caddy`。改完跑 `brew services restart caddy-localdns`。
 用 `*.localhost` 網域，Chrome / Firefox / curl 會自動解析到 127.0.0.1，不用改 `/etc/hosts`（Safari 不一定支援）。
-tap 裡的 `files/caddy-localdns/Caddyfile` 只是初始模板，升級不會覆蓋已存在的設定。
+升級只會補上新的 site 檔，不覆蓋已存在的；要停用某個 site 就清空或改掉 `.caddy` 副檔名（直接刪除下次升級會被補回）。
