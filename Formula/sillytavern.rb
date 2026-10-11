@@ -16,7 +16,7 @@ class Sillytavern < Formula
     # Global mode: config/data 放在使用者目錄，不寫入 libexec
     (bin/"sillytavern").write <<~SH
       #!/bin/bash
-      exec "#{Formula["node"].opt_bin}/node" "#{libexec}/src/server-global.js" "$@"
+      exec "#{formula_opt_bin("node")}/node" "#{libexec}/src/server-global.js" "$@"
     SH
   end
 
