@@ -23,3 +23,15 @@ brew services start caddy-localdns  # http://sillytavern.localhost -> localhost:
 設定檔在 `$(brew --prefix)/etc/caddy-localdns/`：`Caddyfile` 只負責 import，每個 site 一個 `sites/*.caddy`。改完跑 `brew services restart caddy-localdns`。
 用 `*.localhost` 網域，Chrome / Firefox / curl 會自動解析到 127.0.0.1，不用改 `/etc/hosts`（Safari 不一定支援）。
 升級只會補上新的 site 檔，不覆蓋已存在的；要停用某個 site 就清空或改掉 `.caddy` 副檔名（直接刪除下次升級會被補回）。
+
+## Casks
+
+### goink
+
+[Goink](https://github.com/sigpanic/goink) AI 小說寫作桌面 app（僅 Apple Silicon）。
+
+```sh
+brew install --cask mudream4869/tap/goink
+```
+
+未經 notarize，被 Gatekeeper 擋的話：`xattr -dr com.apple.quarantine /Applications/goink.app`。
