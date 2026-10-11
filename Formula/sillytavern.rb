@@ -40,12 +40,7 @@ class Sillytavern < Formula
     pid = spawn bin/"sillytavern", "--port", port.to_s, "--browserLaunchEnabled", "false"
     begin
       # 最多等 60 秒啟動
-      output = ""
-      60.times do
-        sleep 1
-        output = shell_output("curl -s http://127.0.0.1:#{port}/", nil)
-        break if output.include?("SillyTavern")
-      end
+      output = shell_output("curl -s --retry 60 --retry-delay 1 --retry-connrefused http://127.0.0.1:#{port}/")
       assert_match "SillyTavern", output
     ensure
       Process.kill("TERM", pid)
