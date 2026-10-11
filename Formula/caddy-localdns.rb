@@ -27,7 +27,7 @@ class CaddyLocaldns < Formula
     # keg 不能是空的，順便當 service 入口
     (bin/"caddy-localdns").write <<~SH
       #!/bin/sh
-      exec "#{Formula["caddy"].opt_bin}/caddy" run --config "#{conf}/Caddyfile" "$@"
+      exec "#{formula_opt_bin("caddy")}/caddy" run --config "#{conf}/Caddyfile" "$@"
     SH
   end
 
@@ -63,7 +63,7 @@ class CaddyLocaldns < Formula
   end
 
   test do
-    system Formula["caddy"].opt_bin/"caddy", "validate", "--config", etc/"caddy-localdns/Caddyfile"
+    system formula_opt_bin("caddy")/"caddy", "validate", "--config", etc/"caddy-localdns/Caddyfile"
   end
 
   private

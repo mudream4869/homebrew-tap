@@ -16,7 +16,7 @@ class Sillytavern < Formula
     # Global mode: config/data 放在使用者目錄，不寫入 libexec
     (bin/"sillytavern").write <<~SH
       #!/bin/bash
-      exec "#{Formula["node"].opt_bin}/node" "#{libexec}/src/server-global.js" "$@"
+      exec "#{formula_opt_bin("node")}/node" "#{libexec}/src/server-global.js" "$@"
     SH
   end
 
@@ -39,8 +39,9 @@ class Sillytavern < Formula
     port = free_port
     pid = spawn bin/"sillytavern", "--port", port.to_s, "--browserLaunchEnabled", "false"
     begin
-      sleep 60
-      assert_match "SillyTavern", shell_output("curl -s http://127.0.0.1:#{port}/")
+      # 最多等 60 秒啟動
+      output = shell_output("curl -s --retry 60 --retry-delay 1 --retry-connrefused http://127.0.0.1:#{port}/")
+      assert_match "SillyTavern", output
     ensure
       Process.kill("TERM", pid)
       Process.wait(pid)

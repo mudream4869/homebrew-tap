@@ -1,0 +1,64 @@
+name: brew test-bot
+
+on:
+  push:
+    branches: main
+  pull_request:
+
+# 新 push 取消同分支舊 run
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-bot:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    steps:
+      - name: Set up Homebrew
+        id: set-up-homebrew
+        uses: Homebrew/actions/setup-homebrew@main
+        with:
+          token: ${{ github.token }}
+
+      - name: Cache Homebrew Bundler RubyGems
+        uses: actions/cache@v5
+        with:
+          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
+          key: ${{ matrix.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: ${{ matrix.os }}-rubygems-
+
+      # hosted runner 每次都乾淨，略過 cleanup-before / setup
+
+      # brew style + brew audit
+      - run: brew test-bot --only-tap-syntax
+
+      # goink 只有 arm64 macOS
+      - name: Audit casks
+        if: runner.os == 'macOS'
+        run: brew audit --cask --tap=mudream4869/tap
+
+      # 只測這次改到的 formula
+      - name: Detect changed formulae
+        id: detect
+        if: github.event_name == 'pull_request'
+        run: brew test-bot --only-formulae-detect
+
+      # 不用 test-bot --only-formulae：它會打包 bottle（白花 ~3 分鐘），
+      # 且對沒 bottle 的 formula 會忽略 test 失敗
+      - name: Install and test changed formulae
+        if: steps.detect.outputs.testing_formulae != ''
+        env:
+          FORMULAE: ${{ steps.detect.outputs.testing_formulae }}
+        run: |
+          IFS=, read -ra formulae <<< "$FORMULAE"
+          for f in "${formulae[@]}"; do
+            brew install --formula --build-from-source "$f"
+            brew test --verbose "$f"
+            brew audit --formula --online "$f"
+          done
