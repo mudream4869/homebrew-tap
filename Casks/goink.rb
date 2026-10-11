@@ -14,7 +14,7 @@ cask "goink" do
 
   # 上游只出 arm64 DMG
   depends_on arch: :arm64
-  depends_on macos: :big_sur
+  depends_on :macos
 
   app "goink.app"
 

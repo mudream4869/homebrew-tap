@@ -5,6 +5,11 @@ on:
     branches: main
   pull_request:
 
+# 新 push 取消同分支舊 run
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   test-bot:
     strategy:
@@ -28,9 +33,7 @@ jobs:
           key: ${{ matrix.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
           restore-keys: ${{ matrix.os }}-rubygems-
 
-      - run: brew test-bot --only-cleanup-before
-
-      - run: brew test-bot --only-setup
+      # hosted runner 每次都乾淨，略過 cleanup-before / setup
 
       # brew style + brew audit
       - run: brew test-bot --only-tap-syntax
