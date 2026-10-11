@@ -14,9 +14,11 @@ brew services start sillytavern  # 背景服務
 ### caddy-localdns
 
 用 Caddy 把本地網域（例如 `sillytavern.localhost`）反向代理到 localhost port。
+會一起安裝它代理的 service（目前是 sillytavern），但 service 要各自啟動。
 
 ```sh
-brew install mudream4869/tap/caddy-localdns
+brew install mudream4869/tap/caddy-localdns  # 連同 sillytavern 一起裝
+brew services start sillytavern
 brew services start caddy-localdns  # http://sillytavern.localhost -> localhost:8000
 ```
 
