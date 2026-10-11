@@ -39,8 +39,14 @@ class Sillytavern < Formula
     port = free_port
     pid = spawn bin/"sillytavern", "--port", port.to_s, "--browserLaunchEnabled", "false"
     begin
-      sleep 60
-      assert_match "SillyTavern", shell_output("curl -s http://127.0.0.1:#{port}/")
+      # 最多等 60 秒啟動
+      output = ""
+      60.times do
+        sleep 1
+        output = shell_output("curl -s http://127.0.0.1:#{port}/", nil)
+        break if output.include?("SillyTavern")
+      end
+      assert_match "SillyTavern", output
     ensure
       Process.kill("TERM", pid)
       Process.wait(pid)
