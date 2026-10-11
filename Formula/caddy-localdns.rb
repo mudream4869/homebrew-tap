@@ -3,10 +3,11 @@ class CaddyLocaldns < Formula
   homepage "https://github.com/mudream4869/homebrew-tap"
   # Homebrew 規定要有 url；內容沒用到，只是 pinned 的小檔
   url "https://raw.githubusercontent.com/caddyserver/caddy/v2.11.7/LICENSE"
-  version "2"
+  version "3"
   sha256 "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
 
   depends_on "caddy"
+  depends_on "mudream4869/tap/sillytavern"
 
   def install
     conf = etc/"caddy-localdns"
@@ -16,7 +17,7 @@ class CaddyLocaldns < Formula
       import #{conf}/sites/*.caddy
     EOS
 
-    # 新 service：加一個 site 檔並 bump version
+    # 新 service：加 depends_on、site 檔並 bump version
     write_default conf/"sites/sillytavern.caddy", <<~EOS
       http://sillytavern.localhost {
         reverse_proxy localhost:8000
