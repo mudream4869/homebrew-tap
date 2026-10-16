@@ -46,4 +46,4 @@ export YZMA_LIB=~/yzma-lib
 brew install --cask mudream4869/tap/goink
 ```
 
-未經 notarize，被 Gatekeeper 擋的話：`xattr -dr com.apple.quarantine /Applications/goink.app`。
+未經 notarize，安裝時會自動移除 quarantine。舊版裝的若仍被 Gatekeeper 擋：`brew reinstall --cask mudream4869/tap/goink` 或 `xattr -dr com.apple.quarantine /Applications/goink.app`。

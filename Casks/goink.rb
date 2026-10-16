@@ -18,10 +18,11 @@ cask "goink" do
 
   app "goink.app"
 
-  zap trash: "~/.goink"
+  # 未 notarize，移除 quarantine 避免 Gatekeeper 擋
+  postflight do
+    system_command "/usr/bin/xattr",
+                   args: ["-dr", "com.apple.quarantine", "#{appdir}/goink.app"]
+  end
 
-  caveats <<~EOS
-    Goink is ad-hoc signed, not notarized. If macOS blocks it, run:
-      xattr -dr com.apple.quarantine #{appdir}/goink.app
-  EOS
+  zap trash: "~/.goink"
 end
