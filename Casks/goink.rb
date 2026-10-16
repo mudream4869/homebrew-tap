@@ -19,9 +19,8 @@ cask "goink" do
   app "goink.app"
 
   # 未 notarize，移除 quarantine 避免 Gatekeeper 擋
-  postflight do
-    system_command "/usr/bin/xattr",
-                   args: ["-dr", "com.apple.quarantine", "#{appdir}/goink.app"]
+  postflight_steps do
+    run "/usr/bin/xattr", args: ["-dr", "com.apple.quarantine", "{{appdir}}/goink.app"]
   end
 
   zap trash: "~/.goink"
