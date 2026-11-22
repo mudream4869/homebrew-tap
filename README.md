@@ -36,6 +36,19 @@ yzma install --lib ~/yzma-lib
 export YZMA_LIB=~/yzma-lib
 ```
 
+### hitronview
+
+[hitronview](https://github.com/mudream4869/hitronview)：列出連在 Hitron 路由器上的設備，用別名標示 MAC。
+
+```sh
+brew install mudream4869/tap/hitronview
+hitronview init                                            # 建立 ~/.config/hitronview/config.yaml
+security add-generic-password -s hitronview -a admin -U -w # 路由器密碼存進 Keychain
+brew services start hitronview                             # http://127.0.0.1:18080
+```
+
+第一次啟動要到「系統設定 → 隱私權與安全性 → 區域網路」允許 hitronview，升級後可能要再允許一次。
+
 ## Casks
 
 ### goink
