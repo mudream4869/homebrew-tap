@@ -10,7 +10,7 @@ class Hitronview < Formula
 
   def install
     # 只裝 hitronview；hitronclient 是開發用的除錯工具
-    system "go", "build", *std_go_args(ldflags: "-s -w -X main.version=#{version}"), "./cmd/hitronview"
+    system "go", "build", *std_go_args(ldflags: "-X main.version=#{version}"), "./cmd/hitronview"
   end
 
   def caveats
